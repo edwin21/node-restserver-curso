@@ -45,7 +45,7 @@ let usuarioSchema = new Schema({
 
 });
 
-
+//Creamos una copia del modelo usuario y le quitamos la propiedad password
 usuarioSchema.methods.toJSON = function() {
 
     let user = this;
