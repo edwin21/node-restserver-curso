@@ -194,11 +194,8 @@ app.delete('/producto/:id', [verificaToken], (req, res) => {
         res.json({
             ok: true,
             message: 'Producto eliminado'
-        })
-    })
-
-
-
+        });
+    });
 
 });
 
