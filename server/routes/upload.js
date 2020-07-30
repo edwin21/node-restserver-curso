@@ -3,7 +3,7 @@ const fileUpload = require('express-fileupload');
 const app = express();
 
 const Usuario = require('../models/usuario');
-
+const Producto = require('../models/producto');
 const fs = require('fs');
 const path = require('path');
 
@@ -81,6 +81,47 @@ app.put('/upload/:tipo/:id', function(req, res) {
 });
 
 function guardarImagenProducto(id, res, nombreArchivo) {
+
+    Producto.findById(id, (err, productoDB) => {
+
+        if (err) {
+
+            BorrarImagen(nombreArchivo, 'usuarios');
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+        if (!productoDB) {
+
+            BorrarImagen(nombreArchivo, 'usuarios');
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Producto NO encontrado'
+                }
+            })
+        }
+
+
+
+        //BORRAMOS LA IMAGEN ANTERIOR.
+        BorrarImagen(productoDB.img, 'productos');
+
+        productoDB.img = nombreArchivo;
+        productoDB.save((err, productoGuardado) => {
+
+
+            return res.json({
+                ok: true,
+                producto: productoGuardado,
+                img: nombreArchivo
+            })
+        })
+
+
+
+    });
 
 }
 
