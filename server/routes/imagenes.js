@@ -1,15 +1,16 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-
+const { verificaTokenImagen, verificaToken } = require('../middlewares/autenticacion');
 
 const app = express();
 
 
 
 
-app.get('/imagen/:tipo/:imagen', (req, res) => {
+app.get('/imagen/:tipo/:imagen', verificaTokenImagen, (req, res) => {
 
+    //console.log(req.query.token);
     let tipo = req.params.tipo;
     let imagen = req.params.imagen;
 
@@ -25,13 +26,16 @@ app.get('/imagen/:tipo/:imagen', (req, res) => {
         })
     }
 
+    let noImage = path.resolve(__dirname, '../assets/no-image.jpg');
     let pathFoto = path.resolve(__dirname, `../../uploads/${tipo}/${imagen}`);
-    console.log(pathFoto);
-    res.sendFile(pathFoto);
+    if (fs.existsSync(pathFoto)) {
+        res.sendFile(pathFoto);
+    } else {
+        res.sendFile(noImage);
+    }
+    //console.log(noImage);
 
-    // console.log(__dirname);
-    // let noImage = path.resolve(__dirname, '../assets/no-image.jpg');
-    // res.sendFile(noImage);
+
 });
 
 module.exports = app;
